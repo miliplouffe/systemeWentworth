@@ -105,7 +105,7 @@ class SOCKET_ACCESS:
     Port: int = ""
 
 
-
+# pour info
 def initializeDonneesGenerales(**donneesArrosage):
     donneesGeneralesRec=ARROSAGE_DATA()
     donneesGeneralesRec.ArrosageEnCour=False

@@ -2,8 +2,14 @@ import sys, os
 from time import sleep
 from json import JSONEncoder
 import gpiozero
-from gpiozero import LED
-from gpiozero import LED
+from gpiozero import DigitalInputDevice
+
+class const:
+    detecteurFumee=16
+    detecteurMouvement=23
+    detecteurEauElectrique=24
+    detecteurEauTraitement=25
+    detecteurPanneElectrique=5
 
 
 relais0 = gpiozero.OutputDevice(0, active_high=False, initial_value=False)
@@ -12,10 +18,11 @@ relais2=relais0
 relais3=relais0
 relais4=relais0
 
-
-def getPinStatut(pinNo):
-    valeur = LED(pinNo)
-    return valeur.is_active
+detecteurFumee = DigitalInputDevice(const.detecteurFumee,pull_up=True)
+detecteurMouvement = DigitalInputDevice(const.detecteurMouvement,pull_up=True)
+detecteurEauElectrique = DigitalInputDevice(const.detecteurEauElectrique,pull_up=True)
+detecteurEauTraitement = DigitalInputDevice(const.detecteurEauTraitement,pull_up=True)
+detecteurPanneElectrique = DigitalInputDevice(const.detecteurPanneElectrique,pull_up=True)
 
 
 def get_relais(nomRelais):
@@ -62,14 +69,16 @@ def set_relais(nomRelais, statut):
 
     PanneElectrique: float = 0.0
 
-def getAlarmeDetecteur(detecteurAlarme, fumeePin,mouvementPin, eauElectriquePin,eauTraitementPin,panneElectriquePin):
+def getAlarmeDetecteur(detecteurAlarme):
+    global detecteurFumee,detecteurMouvement,detecteurEauElectrique,detecteurEauTraitement,detecteurPanneElectrique
+
     detecteurAlarme.Prop=-1.0
     detecteurAlarme.Co=-1.0
-    detecteurAlarme.Fumee =  getPinStatut(fumeePin)
-    detecteurAlarme.Mouvement=  getPinStatut(mouvementPin)
-    detecteurAlarme.EauTraitement = getPinStatut(eauTraitementPin)
-    detecteurAlarme.EauElectrique = getPinStatut(eauElectriquePin)
-    detecteurAlarme.PanneElectrique = getPinStatut(panneElectriquePin)
+    detecteurAlarme.Fumee =  detecteurFumee.value
+    detecteurAlarme.Mouvement=  detecteurMouvement.value
+    detecteurAlarme.EauTraitement = detecteurEauTraitement.value
+    detecteurAlarme.EauElectrique = detecteurEauElectrique.value
+    detecteurAlarme.PanneElectrique = detecteurPanneElectrique.value
 
     return detecteurAlarme
 

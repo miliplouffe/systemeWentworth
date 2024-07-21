@@ -103,9 +103,8 @@ if __name__ == '__main__':
         try:
 
             # pour alarmes
-            DetecteuAlarme=rpiMethodes.getAlarmeDetecteur(detecteurAlarme, const.fumeePin,const.mouvementPin, const.eauElectriquePin,const.eauTraitementPin,const.panneElectriquePin)
+            detecteurAlarme=rpiMethodes.getAlarmeDetecteur(detecteurAlarme)
             redisInOut.publishInterfaceAlarmeDetecteur(detecteurAlarme)
-
             # pour systeme arrosage va lire si le systeme arrose
             gicleursStatut=rpiMethodes.getArrosageDetecteur(gicleursStatut)
 

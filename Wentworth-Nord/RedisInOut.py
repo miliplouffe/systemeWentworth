@@ -224,7 +224,7 @@ def recupereAlarmeDetecteur():
         if is_redis_available():
             redisClient.publish("allo ", 44444444) 
             clientSubscribe = redisClient.pubsub()
-            clientSubscribe.subscribe(const.InterfaceDetecteurArrosage)
+            clientSubscribe.subscribe(const.InterfaceDetecteurAlarme)
 
             for message in clientSubscribe.listen():
                 if message is not None and isinstance(message, dict):

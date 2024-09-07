@@ -16,7 +16,7 @@ redisIpAdresse="192.168.1.143"
 redisInOut.InitialiseRedisClient(redisIpAdresse)
 
 import struct
-
+# allo
 class const:
     format = "02-01-2006 15:04:05"
     alarmeDureePorteAvant = 20

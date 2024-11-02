@@ -3,6 +3,7 @@ from time import sleep
 from json import JSONEncoder
 import gpiozero
 from gpiozero import DigitalInputDevice
+from gpiozero import LED, MCP23017
 
 class const:
     detecteurFumee=16
@@ -12,11 +13,11 @@ class const:
     detecteurPanneElectrique=5
 
 
-relais0 = gpiozero.OutputDevice(0, active_high=False, initial_value=False)
-relais1=  gpiozero.OutputDevice(4, active_high=False, initial_value=False)
-relais2=relais0
-relais3=relais0
-relais4=relais0
+gicleur0 = gpiozero.OutputDevice(0, active_high=False, initial_value=False)
+gicleur1=  gpiozero.OutputDevice(4, active_high=False, initial_value=False)
+gicleur2=gicleur0
+gicleur3=gicleur0
+gicleur4=gicleur0
 
 detecteurFumee = DigitalInputDevice(const.detecteurFumee,pull_up=True)
 detecteurMouvement = DigitalInputDevice(const.detecteurMouvement,pull_up=True)
@@ -26,45 +27,45 @@ detecteurPanneElectrique = DigitalInputDevice(const.detecteurPanneElectrique,pul
 
 
 def get_relais(nomRelais):
-    global relais1, relais2, relais3, relais4
+    global gicleur1, gicleur2, gicleur3, gicleur4
 
     valeur=False
 
-    if nomRelais=="relais1":
-       valeur= relais1.value
-    if nomRelais=="relais2":
-        valeur= relais2.value
-    if nomRelais=="relais3":
-        valeur= relais3.value            
-    if nomRelais=="relais4":
-        valeur= relais4.value
+    if nomRelais=="gicleur1":
+       valeur= gicleur1.value
+    if nomRelais=="gicleur2":
+        valeur= gicleur2.value
+    if nomRelais=="gicleur3":
+        valeur= gicleur3.value            
+    if nomRelais=="gicleur4":
+        valeur= gicleur4.value
     
     return valeur
 
 def set_relais(nomRelais, statut):
-    global relais1, relais2, relais3, relais4
+    global gicleur1, gicleur2, gicleur3, gicleur4
 
     if statut==True:
         print ("statut True")
         if nomRelais =="relais1":
             print ("relais on")
-            relais1.on()
+            gicleur1.on()
         if nomRelais =="relais2":
-            relais2.on()        
+            gicleur2.on()        
         if nomRelais =="relais3":
-            relais3.on()
+            gicleur3.on()
         if nomRelais =="relais4":
-            relais4.on()            
+            gicleur4.on()            
     else:
         if nomRelais =="relais1":
             print ("relais off")
-            relais1.off()
+            gicleur1.off()
         if nomRelais =="relais2":
-            relais2.off()
+            gicleur2.off()
         if nomRelais =="relais3":
-            relais3.off()
+            gicleur3.off()
         if nomRelais =="relais4":
-            relais4.off()
+            gicleur4.off()
 
 
     PanneElectrique: float = 0.0
@@ -82,10 +83,12 @@ def getAlarmeDetecteur(detecteurAlarme):
 
     return detecteurAlarme
 
-def getArrosageDetecteur(gicleursStatut):
-    gicleursStatut["1"].statut = get_relais("relais1")
-    gicleursStatut["2"].statut=False
-    gicleursStatut["3"].statut=False
-    gicleursStatut["4"].statut=False
+def getValeursGicleurs():
+    equipementsGicleurs=list()
+    
+    equipementsGicleurs.append=gicleur1.value
+    equipementsGicleurs.append=gicleur2.value
+    equipementsGicleurs.append=gicleur3.value
+    equipementsGicleurs.append=gicleur4.value
 
-    return gicleursStatut
+    return equipementsGicleurs

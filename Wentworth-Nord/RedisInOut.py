@@ -8,7 +8,7 @@ from time import sleep
 import jsonpickle
 import redis
 
-# ipaddressRedis='192.168.1.102'
+ipaddressRedis='192.168.1.102'
 # ipaddressRedis=''
 
 class const:

@@ -9,8 +9,9 @@ import socket,pickle
 from time import sleep
 import struct
 import RedisInOut as redisInOut
+import rpiMethodes
 
-redisIpAdresse="192.168.1.143"
+redisIpAdresse="192.168.1.102"
 redisInOut.InitialiseRedisClient(redisIpAdresse)
 
 NoZone=0
@@ -260,7 +261,7 @@ def initialiaseGicleurs(**gicleurs):
     gicleurRec=GICLEURS()
     gicleurRec.NoZone=2
     gicleurRec.ZoneNom="relais2"
-    gicleurRec.ZoneActive=False
+    gicleurRec.ZoneActive=True
     gicleurRec.TempsArrosage=1
     gicleurRec.Affichage=True
     gicleurRec.AffichageWeb=True
@@ -271,7 +272,7 @@ def initialiaseGicleurs(**gicleurs):
     gicleurRec=GICLEURS()
     gicleurRec.NoZone=3
     gicleurRec.ZoneNom="relais3"
-    gicleurRec.ZoneActive=False
+    gicleurRec.ZoneActive=True
     gicleurRec.TempsArrosage=1
     gicleurRec.Affichage=True
     gicleurRec.AffichageWeb=True
@@ -282,7 +283,7 @@ def initialiaseGicleurs(**gicleurs):
     gicleurRec=GICLEURS()
     gicleurRec.NoZone=4
     gicleurRec.ZoneNom="relais4"
-    gicleurRec.ZoneActive=False
+    gicleurRec.ZoneActive=True
     gicleurRec.TempsArrosage=1
     gicleurRec.Affichage=True
     gicleurRec.AffichageWeb=True
@@ -298,34 +299,33 @@ def initialiaseGicleurs(**gicleurs):
 # hostname=socket.gethostname()  
 # SendRec["ArrosageEcranDataEquipement"].Ip=socket.gethostbyname(hostname)  
   
-def decodeDataDetecteur(relaiValeur, **gicleursStatut):
+def decodeDataDetecteur(gicleurValeurList, **gicleursStatut):
 
 
     recGicleur=GICLEURS_STATUT()
     recGicleur = gicleursStatut["1"]
-    recGicleur.Statut = relaiValeur
+    recGicleur.Statut = gicleurValeurList[0]
 
     recGicleur.DateHeureCourante = datetime.now()
     gicleursStatut["1"]=recGicleur
 
     recGicleur = gicleursStatut["2"]
-    recGicleur.Statut = relaiValeur
+    recGicleur.Statut = gicleurValeurList[1]
     recGicleur.DateHeureCourante = datetime.now()
     gicleursStatut["2"]=recGicleur
 
     recGicleur = gicleursStatut["3"]
-    recGicleur.Statut = relaiValeur
+    recGicleur.Statut = gicleurValeurList[2]
     recGicleur.DateHeureCourante = datetime.now()
     gicleursStatut["3"]=recGicleur
 
     recGicleur = gicleursStatut["4"]
-    recGicleur.Statut = relaiValeur
+    recGicleur.Statut = gicleurValeurList[3]
     recGicleur.DateHeureCourante = datetime.now()
     if recGicleur.Statut==0:
         recGicleur.Statut=1
     else:
         recGicleur.Statut=0
-    gicleursStatut["4"]=recGicleur
 
     return gicleursStatut
 
@@ -355,7 +355,6 @@ gicleurs = initialiaseGicleurs()
 # redisInOut.sauvegardeArrosageConfigurationGicleurs(gicleurs)
 
 redisInOut.StartSystemeArrosageRequete()
-redisInOut.startSystemeStatutGicleur()
 
 
 if __name__ == '__main__':
@@ -367,6 +366,7 @@ if __name__ == '__main__':
     DateHeureDebutIntervalle=datetime.now() + timedelta(days=-10)
 
     sauvegardeMessageLogs("Systeme arrosage Montreal :" + "systeme demarre" )
+    redisInOut.RunRedisInOut("StartSystemeArrosageRequete")    # check if task is running
 
     t1 = threading.Thread(target=sendSystemeArrosageGicleursStatuts)
     t1.start()
@@ -375,8 +375,14 @@ if __name__ == '__main__':
     
     while True :  
         try:
-            gicleursStatut= redisInOut.getSystemeArrosageStatut()
             redisInOut.RunRedisInOut("StartSystemeArrosageRequete")    # check if task is running
+            redisInOut.RunRedisInOut("StartSystemeArrosageRequete")    # check if task is running
+            
+            
+            gicleurValeurList = rpiMethodes.getArrosageDetecteur()      
+            gicleursStatut=decodeDataDetecteur(gicleurValeurList, **gicleursStatut)
+            # gicleurStatut est sauvegardé dans redis par le thread sendSystemeArrosageGicleursStatuts
+
             
             Requete = redisInOut.getRequeteArrosage()
             sleep(1)
@@ -387,11 +393,6 @@ if __name__ == '__main__':
             sleep(1)    
 
            
-            gicleurValideRec = redisInOut.getSystemeArrosageStatut()
-            gicleursStatut=decodeDataDetecteur(gicleurValideRec, **gicleursStatut)
-
-            redisInOut.publishSystemeStatutGicleurs(gicleursStatut)
-            
             if Requete == "NouvelleConfiguration":
                 sauvegardeMessageActivites(datetime.now(),"config general et gicleurs", "Changement de configuration")
                 confGeneral = redisInOut.recupereSystemeArrosageConfigurationGenerale()

@@ -6,6 +6,7 @@ import RedisInOut as redisInOut
 from dataclasses import dataclass
 from time import sleep
 from json import JSONEncoder
+import rpiMethodes
 
 # from pymarshaler.marshal import Marshal
 import threading
@@ -496,30 +497,21 @@ if __name__ == '__main__':
     panneElectriquePin             = 5
 
     while True:
-        print ("passe 01")
+        redisInOut.RunRedisInOut("StartSystemeAlarmeRequete")   # check if task is running                 
         Requete=redisInOut.getRequeteAlarme()
-        print ("passe 02")
-        redisInOut.RunRedisInOut("StartSystemeAlarmeRequete")   # check if task is running
-        print ("passe 03")
-####        redisInOut.RunRedisInOut("StartArduinoDetecteurs")    # check if task is running
-        sleep(1)
-        readAllData=True
-        if readAllData==True:
-            try:
-                Detecteur=redisInOut.getAlarmeDetecteur()
-                # print (" detecteurs  :", Detecteur)
-                Equipement = decodeDataDetecteur(Detecteur, **Equipement)
-                Equipement = changeValeursPinsArmer(Equipement)
-                redisInOut.publishSystemeAlarmeEquipement(Equipement)
-            except Exception as e:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]    
-                # print(exc_type, fname, exc_tb.tb_lineno)
 
-        else:
-            sleep(.1)
+        try:
+            Detecteur = rpiMethodes.getAlarmeDetecteur()
+            Equipement = decodeDataDetecteur(Detecteur, **Equipement)
+            Equipement = changeValeursPinsArmer(Equipement)
+            redisInOut.publishSystemeAlarmeEquipement(Equipement)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]    
+            # print(exc_type, fname, exc_tb.tb_lineno)
 
-        readAllData=True 
+
+
  
         if Requete == str("ActivationPartielle") and valideDetecteurArmerSystemePartiel(**Equipement) == True:
             Equipement = assigneStatutArmerPartiel(**Equipement)
@@ -528,7 +520,6 @@ if __name__ == '__main__':
             systemeAlarmeSatut = "ActivationPartielle"
             # sendSystemeAlarmeDataEquipement(SendRec["AlarmeEcranDataEquipement"].Ip, SendRec["AlarmeEcranDataEquipement"].Port,**Equipement)
             sleep(0.5)
-            readAllData=False
             sendMail("Systeme alarme Wentworth-Nord","Le systeme d alarme est active partiellement")
             redisInOut.Requete = ""
             Requete=""
@@ -549,7 +540,6 @@ if __name__ == '__main__':
             sleep(0.5)
             redisInOut.RequeteAlarme=""
             Requete=""
-            readAllData=False
             #activeCompletTest = ""
             sendMail("Systeme alarme Wentworth-Nord","Le systeme d alarme est active completement")
 
@@ -565,7 +555,6 @@ if __name__ == '__main__':
             # sendSystemeAlarmeDataEquipement(SendRec["AlarmeEcranDataEquipement"].Ip, SendRec["AlarmeEcranDataEquipement"].Port,**Equipement)
             sleep(0.5)
             # ser.write(b'AlarmeSonore_OFF')
-            readAllData=False
             # go AvertisseurAlarme.Demarrer(AlarmeSonore_OFF)
             # writeModeActuelAlarmeFile("Desactivation")
             sendMail("Systeme alarme Wentworth-Nord","Le systeme d alarme est desactive")

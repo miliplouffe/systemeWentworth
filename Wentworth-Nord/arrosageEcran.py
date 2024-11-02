@@ -15,7 +15,7 @@ from functools import partial
 import pickle
 import RedisInOut as redisInOut
 
-redisIpAdresse="192.168.1.143"
+redisIpAdresse="192.168.1.102"
 redisInOut.InitialiseRedisClient(redisIpAdresse)
 
 Refresh=False

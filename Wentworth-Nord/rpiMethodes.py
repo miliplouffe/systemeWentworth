@@ -3,7 +3,7 @@ from time import sleep
 from json import JSONEncoder
 import gpiozero
 from gpiozero import DigitalInputDevice
-from gpiozero import LED, MCP23017
+from gpiozero import LED
 
 class const:
     detecteurFumee=16
@@ -43,29 +43,24 @@ def get_relais(nomRelais):
     return valeur
 
 def set_relais(nomRelais, statut):
-    global gicleur1, gicleur2, gicleur3, gicleur4
+    global relais1, relais2, relais3, relais4
 
     if statut==True:
         print ("statut True")
-        if nomRelais =="relais1":
+        if nomRelais =="1":
             print ("relais on")
             gicleur1.on()
-        if nomRelais =="relais2":
+        if nomRelais =="2":
             gicleur2.on()        
-        if nomRelais =="relais3":
+        if nomRelais =="3":
             gicleur3.on()
-        if nomRelais =="relais4":
+        if nomRelais =="4":
             gicleur4.on()            
     else:
-        if nomRelais =="relais1":
-            print ("relais off")
-            gicleur1.off()
-        if nomRelais =="relais2":
-            gicleur2.off()
-        if nomRelais =="relais3":
-            gicleur3.off()
-        if nomRelais =="relais4":
-            gicleur4.off()
+        gicleur1.off()
+        gicleur2.off()
+        gicleur3.off()
+        gicleur4.off()
 
 
     PanneElectrique: float = 0.0

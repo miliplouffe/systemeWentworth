@@ -8,7 +8,7 @@ from time import sleep
 import jsonpickle
 import redis
 
-ipaddressRedis='192.168.1.102'
+ipaddressRedis='192.168.1.143'
 # ipaddressRedis=''
 
 class const:
@@ -117,7 +117,6 @@ def sauvegardeArrosageConfigurationGicleurs(gicleurs):
 def recupereArrosageConfigurationGicleurs():
     global gicleurs
     global redisClient,redisIpAdresseGlobal
-
     if is_redis_available():
         try:
             value = redisClient.get(const.configurationArrosageGicleurs)

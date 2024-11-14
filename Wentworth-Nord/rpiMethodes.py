@@ -30,7 +30,7 @@ def get_relais(nomRelais):
     global gicleur1, gicleur2, gicleur3, gicleur4
 
     valeur=False
-
+    print ("valeur gicleur 1 ", gicleur1.value)
     if nomRelais=="gicleur1":
        valeur= gicleur1.value
     if nomRelais=="gicleur2":
@@ -91,21 +91,37 @@ def getAlarmeDetecteur(detecteurAlarme):
 
 def getValeursGicleurs(gicleurs):
     equipementsGicleurs=[]
+    print ("valeur gicleur 1 ", gicleur1.value)
+    
     if gicleurs["1"].ZoneActive==True:
-        equipementsGicleurs.append(gicleur1.value)
+        if gicleur1.value == 1:
+            equipementsGicleurs.append(0)
+        else:
+            equipementsGicleurs.append(1)
     else:
          equipementsGicleurs.append(-1)
     if gicleurs["2"].ZoneActive==True:
-        equipementsGicleurs.append(gicleur1.value)
+        if gicleur2.value == 1:
+            equipementsGicleurs.append(0)
+        else:
+            equipementsGicleurs.append(1)
     else:
-         equipementsGicleurs.append(-1)        
+         equipementsGicleurs.append(-1)
     if gicleurs["3"].ZoneActive==True:
-        equipementsGicleurs.append(gicleur1.value)
+        if gicleur3.value == 1:
+            equipementsGicleurs.append(0)
+        else:
+            equipementsGicleurs.append(1)
     else:
          equipementsGicleurs.append(-1)
     if gicleurs["4"].ZoneActive==True:
-        equipementsGicleurs.append(gicleur1.value)
+        if gicleur4.value == 1:
+            equipementsGicleurs.append(0)
+        else:
+            equipementsGicleurs.append(1)
     else:
          equipementsGicleurs.append(-1)
+                  
+   
 
     return equipementsGicleurs

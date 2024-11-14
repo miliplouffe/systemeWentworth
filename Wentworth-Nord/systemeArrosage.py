@@ -227,10 +227,10 @@ def initialiseConfigurationGenerale():
     global GicleurAssocie
     confGeneral=CONFIGURATION_GENERALE()
 
-    confGeneral.ArrosageJourPairImpair="Pair"
+    confGeneral.ArrosageJourPairImpair="Impair"
     confGeneral.SystemArrosageActif=True
     confGeneral.SondePluieActive=False
-    confGeneral.HeureDebutArrosage=9
+    confGeneral.HeureDebutArrosage=17
     confGeneral.NombreJourInterval
 
     return confGeneral
@@ -294,7 +294,6 @@ def decodeDataDetecteur(gicleurValeurList, **gicleursStatut):
     recGicleur=GICLEURS_STATUT()
     recGicleur = gicleursStatut["1"]
     recGicleur.Statut = gicleurValeurList[0]
-
     recGicleur.DateHeureCourante = datetime.now()
     gicleursStatut["1"]=recGicleur
 
@@ -314,11 +313,8 @@ def decodeDataDetecteur(gicleurValeurList, **gicleursStatut):
     recGicleur = gicleursStatut["4"]
     recGicleur.Statut = gicleurValeurList[3]
     recGicleur.DateHeureCourante = datetime.now()
-    if recGicleur.Statut==0:
-        recGicleur.Statut=1
-    else:
-        recGicleur.Statut=0
     gicleursStatut["4"]=recGicleur
+    
     return gicleursStatut
 
 
@@ -460,19 +456,18 @@ gicleursStatut=dict()
 gicleursStatut=initialiseGicleursStatut()
 
 confGeneral=initialiseConfigurationGenerale()
-gicleurs=initialiaseGicleurs()
 redisInOut.sauvegardeSystemeArrosageConfigurationGenerale(confGeneral)
 redisInOut.sauvegardeArrosageConfigurationGicleurs(gicleurs)
 
 confGeneral = redisInOut.recupereSystemeArrosageConfigurationGenerale()
-gicleurs=redisInOut.recupereArrosageConfigurationGicleurs()
-fermerGicleurs(gicleurs)
+gicleurs=initialiaseGicleurs()
+# gicleurs=redisInOut.recupereArrosageConfigurationGicleurs()
 
-redisInOut.StartSystemeArrosageRequete()
-redisInOut.startSystemeStatutGicleur()
+
+# redisInOut.StartSystemeArrosageRequete()
+# redisInOut.startSystemeStatutGicleur()
 rpiMethodes.initialiseRelaisGicleur(gicleurs)
-
-
+fermerGicleurs(gicleurs)
 
 if __name__ == '__main__':
     global valeurPluie
@@ -490,12 +485,12 @@ if __name__ == '__main__':
             redisInOut.RunRedisInOut("StartSystemeArrosageRequete")    # check if task is running        
             gicleurValeurList = rpiMethodes.getValeursGicleurs(gicleurs) 
             gicleursStatut=decodeDataDetecteur(gicleurValeurList, **gicleursStatut)
-            # gicleurStatut est sauvegardé dans redis par le thread sendSystemeArrosageGicleursStatuts
+
             Requete = redisInOut.getRequeteArrosage()
             sleep(1)
             executeRequete(Requete)
             Requete=""
-
+ 
             for rec in donneesArrosage:
                 dataRec=ARROSAGE_DATA()
                 dataRec=donneesArrosage[rec]

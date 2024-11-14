@@ -345,9 +345,9 @@ def publishSystemeArrosageRequete(Requete):
 def publishSystemeStatutGicleurs(statutGicleurs):
     global redisClient,redisIpAdresseGlobal
     if is_redis_available():
-        dataToSend = jsonpickle.encode(const.InterfaceDetecteurArrosage)
+        dataToSend = jsonpickle.encode(statutGicleurs)
         #dataToSend = json.dumps(action, cls=CustomJSONEncoder)
-        redisClient.publish(const.gicleurData, dataToSend)
+        redisClient.publish(const.InterfaceDetecteurArrosage, dataToSend)
     else:
         redisClient = redis.StrictRedis(host=redisIpAdresseGlobal, port=6379, charset="utf-8", decode_responses=True)
 

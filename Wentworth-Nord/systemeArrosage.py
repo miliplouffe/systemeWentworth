@@ -11,6 +11,7 @@ import struct
 import RedisInOut as redisInOut
 import rpiMethodes
 
+
 redisIpAdresse="192.168.1.143"
 redisInOut.InitialiseRedisClient(redisIpAdresse)
 
@@ -455,13 +456,13 @@ gicleurEnCour = GICLEUR_EN_COUR()
 gicleursStatut=dict()
 gicleursStatut=initialiseGicleursStatut()
 
-confGeneral=initialiseConfigurationGenerale()
-redisInOut.sauvegardeSystemeArrosageConfigurationGenerale(confGeneral)
-redisInOut.sauvegardeArrosageConfigurationGicleurs(gicleurs)
+# confGeneral=initialiseConfigurationGenerale()
+# redisInOut.sauvegardeSystemeArrosageConfigurationGenerale(confGeneral)
+# redisInOut.sauvegardeArrosageConfigurationGicleurs(gicleurs)
 
 confGeneral = redisInOut.recupereSystemeArrosageConfigurationGenerale()
-gicleurs=initialiaseGicleurs()
-# gicleurs=redisInOut.recupereArrosageConfigurationGicleurs()
+# gicleurs=initialiaseGicleurs()
+gicleurs=redisInOut.recupereArrosageConfigurationGicleurs()
 
 
 # redisInOut.StartSystemeArrosageRequete()

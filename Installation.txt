@@ -1,0 +1,14 @@
+
+
+Install
+pip install mcp23017
+sudo apt-get install git-core
+sudo apt install -y i2c-tools python3-smbus
+pip install python3-smbus
+pip install smbus2
+Redis
+https://pimylifeup.com/raspberry-pi-redis/
+https://redis.io/docs/latest/operate/oss_and_stack/management/admin/
+install mcp230017
+pip3 install adafruit-circuitpython-mcp230xx
+https://learn.adafruit.com/using-mcp23008-mcp23017-with-circuitpython/python-circuitpython   exemple de mcp230017 gpio0
